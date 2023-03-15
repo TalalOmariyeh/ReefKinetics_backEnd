@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ReefKineticsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="tbModel">
+          <Key>
+            <PropertyRef Name="ModelId" />
+          </Key>
+          <Property Name="ModelId" Type="int" Nullable="false" />
+          <Property Name="ModelName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModelDescription" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="tbRobot">
+          <Key>
+            <PropertyRef Name="RobotId" />
+          </Key>
+          <Property Name="RobotId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RobotName" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="RtypeID" Type="int" />
+        </EntityType>
+        <EntityType Name="tbRobotType">
+          <Key>
+            <PropertyRef Name="RTypeId" />
+          </Key>
+          <Property Name="RTypeId" Type="int" Nullable="false" />
+          <Property Name="ModelId" Type="int" />
+          <Property Name="RtypeName" Type="nvarchar" MaxLength="50" />
+          <Property Name="RTypeDescription" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="tbUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar(max)" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="AddDate" Type="datetime" />
+          <Property Name="Address" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_tbRobot_tbRobotType">
+          <End Role="tbRobotType" Type="Self.tbRobotType" Multiplicity="0..1" />
+          <End Role="tbRobot" Type="Self.tbRobot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbRobotType">
+              <PropertyRef Name="RTypeId" />
+            </Principal>
+            <Dependent Role="tbRobot">
+              <PropertyRef Name="RtypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbRobot_tbUser">
+          <End Role="tbUser" Type="Self.tbUser" Multiplicity="0..1" />
+          <End Role="tbRobot" Type="Self.tbRobot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="tbRobot">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbRobotType_tbModel">
+          <End Role="tbModel" Type="Self.tbModel" Multiplicity="0..1" />
+          <End Role="tbRobotType" Type="Self.tbRobotType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbModel">
+              <PropertyRef Name="ModelId" />
+            </Principal>
+            <Dependent Role="tbRobotType">
+              <PropertyRef Name="ModelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ReefKineticsModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbModel" EntityType="Self.tbModel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbRobot" EntityType="Self.tbRobot" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbRobotType" EntityType="Self.tbRobotType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbUser" EntityType="Self.tbUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tbRobot_tbRobotType" Association="Self.FK_tbRobot_tbRobotType">
+            <End Role="tbRobotType" EntitySet="tbRobotType" />
+            <End Role="tbRobot" EntitySet="tbRobot" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbRobot_tbUser" Association="Self.FK_tbRobot_tbUser">
+            <End Role="tbUser" EntitySet="tbUser" />
+            <End Role="tbRobot" EntitySet="tbRobot" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbRobotType_tbModel" Association="Self.FK_tbRobotType_tbModel">
+            <End Role="tbModel" EntitySet="tbModel" />
+            <End Role="tbRobotType" EntitySet="tbRobotType" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ReefKineticsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tbModel">
+          <Key>
+            <PropertyRef Name="ModelId" />
+          </Key>
+          <Property Name="ModelId" Type="Int32" Nullable="false" />
+          <Property Name="ModelName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModelDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbRobotTypes" Relationship="Self.FK_tbRobotType_tbModel" FromRole="tbModel" ToRole="tbRobotType" />
+        </EntityType>
+        <EntityType Name="tbRobot">
+          <Key>
+            <PropertyRef Name="RobotId" />
+          </Key>
+          <Property Name="RobotId" Type="Int32" Nullable="false" />
+          <Property Name="RobotName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="RtypeID" Type="Int32" />
+          <NavigationProperty Name="tbRobotType" Relationship="Self.FK_tbRobot_tbRobotType" FromRole="tbRobot" ToRole="tbRobotType" />
+          <NavigationProperty Name="tbUser" Relationship="Self.FK_tbRobot_tbUser" FromRole="tbRobot" ToRole="tbUser" />
+        </EntityType>
+        <EntityType Name="tbRobotType">
+          <Key>
+            <PropertyRef Name="RTypeId" />
+          </Key>
+          <Property Name="RTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ModelId" Type="Int32" />
+          <Property Name="RtypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RTypeDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbModel" Relationship="Self.FK_tbRobotType_tbModel" FromRole="tbRobotType" ToRole="tbModel" />
+          <NavigationProperty Name="tbRobots" Relationship="Self.FK_tbRobot_tbRobotType" FromRole="tbRobotType" ToRole="tbRobot" />
+        </EntityType>
+        <EntityType Name="tbUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AddDate" Type="DateTime" Precision="3" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbRobots" Relationship="Self.FK_tbRobot_tbUser" FromRole="tbUser" ToRole="tbRobot" />
+        </EntityType>
+        <Association Name="FK_tbRobotType_tbModel">
+          <End Role="tbModel" Type="Self.tbModel" Multiplicity="0..1" />
+          <End Role="tbRobotType" Type="Self.tbRobotType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbModel">
+              <PropertyRef Name="ModelId" />
+            </Principal>
+            <Dependent Role="tbRobotType">
+              <PropertyRef Name="ModelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbRobot_tbRobotType">
+          <End Role="tbRobotType" Type="Self.tbRobotType" Multiplicity="0..1" />
+          <End Role="tbRobot" Type="Self.tbRobot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbRobotType">
+              <PropertyRef Name="RTypeId" />
+            </Principal>
+            <Dependent Role="tbRobot">
+              <PropertyRef Name="RtypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbRobot_tbUser">
+          <End Role="tbUser" Type="Self.tbUser" Multiplicity="0..1" />
+          <End Role="tbRobot" Type="Self.tbRobot" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="tbRobot">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ReefKineticsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="tbModels" EntityType="Self.tbModel" />
+          <EntitySet Name="tbRobots" EntityType="Self.tbRobot" />
+          <EntitySet Name="tbRobotTypes" EntityType="Self.tbRobotType" />
+          <EntitySet Name="tbUsers" EntityType="Self.tbUser" />
+          <AssociationSet Name="FK_tbRobotType_tbModel" Association="Self.FK_tbRobotType_tbModel">
+            <End Role="tbModel" EntitySet="tbModels" />
+            <End Role="tbRobotType" EntitySet="tbRobotTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbRobot_tbRobotType" Association="Self.FK_tbRobot_tbRobotType">
+            <End Role="tbRobotType" EntitySet="tbRobotTypes" />
+            <End Role="tbRobot" EntitySet="tbRobots" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbRobot_tbUser" Association="Self.FK_tbRobot_tbUser">
+            <End Role="tbUser" EntitySet="tbUsers" />
+            <End Role="tbRobot" EntitySet="tbRobots" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ReefKineticsModelStoreContainer" CdmEntityContainer="ReefKineticsEntities">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ReefKineticsModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbModels">
+            <EntityTypeMapping TypeName="ReefKineticsModel.tbModel">
+              <MappingFragment StoreEntitySet="tbModel">
+                <ScalarProperty Name="ModelId" ColumnName="ModelId" />
+                <ScalarProperty Name="ModelName" ColumnName="ModelName" />
+                <ScalarProperty Name="ModelDescription" ColumnName="ModelDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbRobots">
+            <EntityTypeMapping TypeName="ReefKineticsModel.tbRobot">
+              <MappingFragment StoreEntitySet="tbRobot">
+                <ScalarProperty Name="RobotId" ColumnName="RobotId" />
+                <ScalarProperty Name="RobotName" ColumnName="RobotName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RtypeID" ColumnName="RtypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbRobotTypes">
+            <EntityTypeMapping TypeName="ReefKineticsModel.tbRobotType">
+              <MappingFragment StoreEntitySet="tbRobotType">
+                <ScalarProperty Name="RTypeId" ColumnName="RTypeId" />
+                <ScalarProperty Name="ModelId" ColumnName="ModelId" />
+                <ScalarProperty Name="RtypeName" ColumnName="RtypeName" />
+                <ScalarProperty Name="RTypeDescription" ColumnName="RTypeDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbUsers">
+            <EntityTypeMapping TypeName="ReefKineticsModel.tbUser">
+              <MappingFragment StoreEntitySet="tbUser">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AddDate" ColumnName="AddDate" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

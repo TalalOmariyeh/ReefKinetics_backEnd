@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+
+</head>
+
+<body >
+
+    <div ng-app="myApp" ng-controller="robotsCtrl">
+        <div style="text-align: center;">
+            <br />
+            Search By
+            <input ng-model="searchtxt.userEmail"  type="text" placeholder="Email" >
+
+            <input ng-model="searchtxt.RTypeName" type="text" placeholder="Type">
+        </div>
+        <br />
+        <div class="container">
+            <div class="row">
+
+                <table class="table table-stripe">
+                    <thead>
+                        <tr>
+                            <th>Robot Name</th>
+                            <th>user Name</th>
+                            <th>user Email</th>
+                            <th>Robot Type </th>
+                            <th>Model Name </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="r in robots  | filter : searchtxt">
+                            <td> {{ r.RobotName }}</td>
+                            <td>
+                                <select name="myselectUser" id="myselectUser" ng-model="r.UserId">
+                                    <option ng-repeat="option in user" ng-value="{{option.UserId}}">{{option.FullName}}  </option>
+                                    <option value="">--Select User--</option>
+                                </select>
+
+                            </td>
+                            <td> {{ r.userEmail }} </td>
+                            <td> {{ r.RTypeName }} </td>
+                            <td> {{ r.ModelName }} </td>
+                            <td> <button type="button" ng-click="EditUser(r)" class=" btn btn-block mybtn btn-primary tx-tfm">Edit Robots</button></td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+            <br />
+            <hr />
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div id="first">
+                        <div class="myform form ">
+                            <div class="logo mb-3">
+                                <div class="col-md-12 text-center">
+                                    <h1> Robots</h1>
+                                </div>
+                            </div>
+                            <form name="AddRobots" >
+                                <div class="form-group">
+
+                                    <label for="exampleInputRobotName"> Robot Name</label>
+
+                                    <input type="text" name="RobotName" class="form-control" ng-model="RobotName" placeholder="Robot Name" >
+                                </div>
+                                <div class="form-group">
+
+                                    <label for="exampleInputUserName"> Select User</label>
+                                    <select name="selectUser" id="selectUser" ng-model="selectedUser" style="width: 100%;">
+                                        <option ng-repeat="option in user" value="{{option.UserId}}">{{option.FullName}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="exampleInputpRobotType"> Select Robot Type</label>
+                                    <select name="selectType" id="selectType" ng-model="selectedType" style="width: 100%;">
+                                        <option ng-repeat="option in RobotType" value="{{option.RtypeId}}">{{option.RtypeName}}</option>
+                                    </select>
+                                </div>
+
+
+
+                                <div class="row">
+
+                                    <div class="col-md-12 ">
+                                        <button type="button" ng-click="SubmitRobot()" class=" btn btn-block mybtn btn-primary tx-tfm">Add Robots</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <script >
+    var app = angular.module('myApp', []);
+
+
+
+        app.controller('robotsCtrl', function ($scope, $http, $window) {
+
+
+            $http({
+                url: "http://localhost:29835/api/tbRobots/GettbRobots",
+                method: "GET",
+
+            }).then(
+
+                function successCallback(response) {
+
+                    $scope.robots = response.data;
+
+
+
+
+                }, function errorCallback(response) {
+
+                }
+            );
+            
+            $http({
+                url: "http://localhost:29835/api/tbRobots/GettbUser",
+                method: "GET",
+               
+            }).then(
+
+                function successCallback(response) {
+
+                    $scope.user = response.data;
+
+                    
+
+
+                }, function errorCallback(response) {
+                  
+                }
+            );
+
+
+            $http({
+                url: "http://localhost:29835/api/tbRobots/GetRobotType",
+                method: "GET",
+
+            }).then(
+
+                function successCallback(response) {
+
+                    $scope.RobotType = response.data;
+
+                    console.log($scope.RobotType);
+
+                }, function errorCallback(response) {
+
+                }
+            );
+
+           
+            $scope.EditUser = function (r) {
+
+                var RobotData = {
+                    RobotId:r.RobotId,
+                    RobotName: r.RobotName,
+                    UserId: r.UserId,
+                    RtypeId: r.RtypeId
+
+                }
+
+
+                $http.put('http://localhost:29835/api/tbRobots/PuttbRobot', JSON.stringify( RobotData)).then(function (response) {
+                    if (response.data)
+
+                        alert("Robot Added Successfully!");
+
+
+
+                }, function (response) {
+
+                    $scope.msg = "Service not Exists";
+
+                    $scope.statusval = response.status;
+
+                    $scope.statustext = response.statusText;
+
+                    $scope.headers = response.headers();
+
+                });
+            }
+
+
+            $scope.SubmitRobot = function () {
+                
+
+                var RobotData = {
+                    RobotName: $scope.RobotName,
+                    UserId: $scope.selectedUser,
+                    RtypeId: $scope.selectedType
+                   
+                }
+
+              
+
+                $http.post('http://localhost:29835/api/tbRobots/PosttbRobot', JSON.stringify(RobotData)).then(function (response) {
+                    if (response.data)
+
+                        alert("Robot Added Successfully!");
+
+                    $scope.RobotName = ""
+                    $scope.selectedUser = 0;
+                    $scope.selectedType = 0;
+
+                    $http({
+                        url: "http://localhost:29835/api/tbRobots/GettbRobots",
+                        method: "GET",
+
+                    }).then(
+
+                        function successCallback(response) {
+
+                            $scope.robots = response.data;
+
+
+
+
+                        }, function errorCallback(response) {
+
+                        }
+                    );
+
+                }, function (response) {
+
+                    $scope.msg = "Service not Exists";
+
+                    $scope.statusval = response.status;
+
+                    $scope.statustext = response.statusText;
+
+                    $scope.headers = response.headers();
+
+                });
+
+
+
+            };
+                
+
+           
+        
+
+        
+        });
+    </script >
+
+</body >
+    </html >
